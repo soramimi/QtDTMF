@@ -9,23 +9,20 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
-{
+class MainWindow : public QMainWindow {
 	Q_OBJECT
 private:
+	Ui::MainWindow *ui;
 	struct Private;
 	Private *m;
+
+	void setTone(char c);
+	void detectDTMF(int size, const int16_t *data);
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
-
 private slots:
 	void outputAudio();
-	void on_pushButton_clicked();
-	void on_toolButton_pressed();
-
-	void on_toolButton_released();
-
 	void on_toolButton_1_pressed();
 	void on_toolButton_1_released();
 	void on_toolButton_2_pressed();
@@ -58,11 +55,6 @@ private slots:
 	void on_toolButton_c_released();
 	void on_toolButton_d_pressed();
 	void on_toolButton_d_released();
-
-private:
-	Ui::MainWindow *ui;
-	void setTone(char c);
-	void detectDTMF(int size, const int16_t *data);
 protected:
 	void timerEvent(QTimerEvent *);
 };

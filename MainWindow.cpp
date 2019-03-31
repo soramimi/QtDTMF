@@ -196,20 +196,11 @@ void MainWindow::setTone(char c)
 	}
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-	m->playing = !m->playing;
-}
 
-void MainWindow::on_toolButton_pressed()
-{
-	m->playing = true;
-}
 
-void MainWindow::on_toolButton_released()
-{
-	m->playing = false;
-}
+
+
+
 
 void MainWindow::on_toolButton_1_pressed()
 {
