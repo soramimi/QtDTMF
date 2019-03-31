@@ -167,6 +167,9 @@ void MainWindow::setTone(char c)
 	case 'D':
 		m->tone_fq_lo = 941;
 		break;
+	default:
+		m->tone_fq_lo = 0;
+		break;
 	}
 	switch (c) {
 	case '1':
@@ -193,189 +196,179 @@ void MainWindow::setTone(char c)
 	case 'D':
 		m->tone_fq_hi = 1633;
 		break;
+	default:
+		m->tone_fq_hi = 0;
+		break;
 	}
 }
 
-
-
-
-
-
+void MainWindow::play(char c)
+{
+	if (c < 0) {
+		m->playing = false;
+	} else {
+		setTone(c);
+		m->playing = true;
+	}
+}
 
 void MainWindow::on_toolButton_1_pressed()
 {
-	setTone('1');
-	m->playing = true;
+	play('1');
 }
 
 void MainWindow::on_toolButton_1_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_2_pressed()
 {
-	setTone('2');
-	m->playing = true;
+	play('2');
 }
 
 void MainWindow::on_toolButton_2_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_3_pressed()
 {
-	setTone('3');
-	m->playing = true;
+	play('3');
 }
 
 void MainWindow::on_toolButton_3_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_4_pressed()
 {
-	setTone('4');
-	m->playing = true;
+	play('4');
 }
 
 void MainWindow::on_toolButton_4_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_5_pressed()
 {
-	setTone('5');
-	m->playing = true;
+	play('5');
 }
 
 void MainWindow::on_toolButton_5_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_6_pressed()
 {
-	setTone('6');
-	m->playing = true;
+	play('6');
 }
 
 void MainWindow::on_toolButton_6_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_7_pressed()
 {
-	setTone('7');
-	m->playing = true;
+	play('7');
 }
 
 void MainWindow::on_toolButton_7_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_8_pressed()
 {
-	setTone('8');
-	m->playing = true;
+	play('8');
 }
 
 void MainWindow::on_toolButton_8_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_9_pressed()
 {
-	setTone('9');
-	m->playing = true;
+	play('9');
 }
 
 void MainWindow::on_toolButton_9_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_10_pressed()
 {
-	setTone('*');
-	m->playing = true;
+	play('*');
 }
 
 void MainWindow::on_toolButton_10_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_11_pressed()
 {
-	setTone('0');
-	m->playing = true;
+	play('0');
 }
 
 void MainWindow::on_toolButton_11_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_12_pressed()
 {
-	setTone('#');
-	m->playing = true;
+	play('#');
 }
 
 void MainWindow::on_toolButton_12_released()
 {
-	m->playing = false;
+	play(-1);
 }
-
 
 void MainWindow::on_toolButton_a_pressed()
 {
-	setTone('A');
-	m->playing = true;
+	play('A');
 }
 
 void MainWindow::on_toolButton_a_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_b_pressed()
 {
-	setTone('B');
-	m->playing = true;
+	play('B');
 }
 
 void MainWindow::on_toolButton_b_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_c_pressed()
 {
-	setTone('C');
-	m->playing = true;
+	play('C');
 }
 
 void MainWindow::on_toolButton_c_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
 void MainWindow::on_toolButton_d_pressed()
 {
-	setTone('D');
-	m->playing = true;
+	play('D');
 }
 
 void MainWindow::on_toolButton_d_released()
 {
-	m->playing = false;
+	play(-1);
 }
 
