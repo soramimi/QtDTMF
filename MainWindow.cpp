@@ -60,9 +60,9 @@ MainWindow::MainWindow(QWidget *parent)
 	format.setSampleRate(m->sample_fq);
 	format.setSampleSize(16);
 	format.setSampleType(QAudioFormat::SignedInt);
+
 	m->audio_output = std::make_shared<QAudioOutput>(format);
 	m->audio_output->setBufferSize(2000);
-	connect(m->audio_output.get(), &QAudioOutput::notify, this, &MainWindow::outputAudio);
 	m->device = m->audio_output->start();
 
 	startTimer(10);
