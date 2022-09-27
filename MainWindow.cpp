@@ -3,6 +3,7 @@
 #include "Generator.h"
 #include "SineCurve.h"
 #include "pi2.h"
+#include "MyAudioOutput6.h"
 #include <QAudioFormat>
 #include <QAudioSink>
 #include <QMediaDevices>
@@ -33,17 +34,9 @@ double goertzel(int size, int16_t const *data, int sample_fq, int detect_fq)
 }
 
 struct MainWindow::Private {
-	bool playing = false;
-	int volume = 5000;
-	int sample_fq = 8000;
-	std::shared_ptr<Generator> generator;
-	QAudioDevice audio_output_dev;
-	std::shared_ptr<QAudioOutput> audio_output;
-	std::shared_ptr<QAudioSink> audio_output_sink;
-	QIODevice *device = nullptr;
 	double dtmf_levels[8] = {};
-	SineCurve sine_curve_lo;
-	SineCurve sine_curve_hi;
+	std::shared_ptr<Generator> generator;
+	MyAudioOutput6 audio_output;
 };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -53,19 +46,10 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	QAudioFormat format;
-	format.setChannelCount(1);
-	format.setSampleRate(m->sample_fq);
-	format.setSampleFormat(QAudioFormat::Int16);
-
 	m->generator = std::make_shared<Generator>();
 	m->generator->start();
 
-	m->audio_output_dev = QMediaDevices::defaultAudioOutput();
-	m->audio_output = std::make_shared<QAudioOutput>(m->audio_output_dev);
-	m->audio_output_sink = std::make_shared<QAudioSink>(m->audio_output_dev, format);
-	m->audio_output_sink->setBufferSize(1);
-	m->audio_output_sink->start(m->generator.get());
+	m->audio_output.start(m->generator.get());
 
 	connect(m->generator.get(), &Generator::notify, [&](int n, int16_t const *p){
 		detectDTMF(n, p);
@@ -84,7 +68,7 @@ MainWindow::~MainWindow()
 void MainWindow::detectDTMF(int size, int16_t const *data)
 {
 	for (int i = 0; i < 8; i++) {
-		m->dtmf_levels[i] = goertzel(size, data, m->sample_fq, dtmf_fq[i]);
+		m->dtmf_levels[i] = goertzel(size, data, m->audio_output.sample_fq, dtmf_fq[i]);
 	}
 }
 
@@ -168,174 +152,163 @@ void MainWindow::setTone(char c)
 	m->generator->setTone(tone_fq_lo, tone_fq_hi);
 }
 
-void MainWindow::play(char c)
-{
-	if (c < 0) {
-		m->generator->setTone(0, 0);
-		m->playing = false;
-	} else {
-		setTone(c);
-		m->playing = true;
-	}
-}
-
 void MainWindow::on_toolButton_1_pressed()
 {
-	play('1');
+	setTone('1');
 }
 
 void MainWindow::on_toolButton_1_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_2_pressed()
 {
-	play('2');
+	setTone('2');
 }
 
 void MainWindow::on_toolButton_2_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_3_pressed()
 {
-	play('3');
+	setTone('3');
 }
 
 void MainWindow::on_toolButton_3_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_4_pressed()
 {
-	play('4');
+	setTone('4');
 }
 
 void MainWindow::on_toolButton_4_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_5_pressed()
 {
-	play('5');
+	setTone('5');
 }
 
 void MainWindow::on_toolButton_5_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_6_pressed()
 {
-	play('6');
+	setTone('6');
 }
 
 void MainWindow::on_toolButton_6_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_7_pressed()
 {
-	play('7');
+	setTone('7');
 }
 
 void MainWindow::on_toolButton_7_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_8_pressed()
 {
-	play('8');
+	setTone('8');
 }
 
 void MainWindow::on_toolButton_8_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_9_pressed()
 {
-	play('9');
+	setTone('9');
 }
 
 void MainWindow::on_toolButton_9_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_10_pressed()
 {
-	play('*');
+	setTone('*');
 }
 
 void MainWindow::on_toolButton_10_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_11_pressed()
 {
-	play('0');
+	setTone('0');
 }
 
 void MainWindow::on_toolButton_11_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_12_pressed()
 {
-	play('#');
+	setTone('#');
 }
 
 void MainWindow::on_toolButton_12_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_a_pressed()
 {
-	play('A');
+	setTone('A');
 }
 
 void MainWindow::on_toolButton_a_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_b_pressed()
 {
-	play('B');
+	setTone('B');
 }
 
 void MainWindow::on_toolButton_b_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_c_pressed()
 {
-	play('C');
+	setTone('C');
 }
 
 void MainWindow::on_toolButton_c_released()
 {
-	play(-1);
+	setTone(0);
 }
 
 void MainWindow::on_toolButton_d_pressed()
 {
-	play('D');
+	setTone('D');
 }
 
 void MainWindow::on_toolButton_d_released()
 {
-	play(-1);
+	setTone(0);
 }
 
