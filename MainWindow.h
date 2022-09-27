@@ -1,9 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QAudioFormat>
 #include <QAudioOutput>
-#include <stdint.h>
+#include <QIODevice>
+#include <QMainWindow>
 
 namespace Ui {
 class MainWindow;
@@ -18,11 +19,11 @@ private:
 
 	void detectDTMF(int size, const int16_t *data);
 	void setTone(char c);
-public:
-	explicit MainWindow(QWidget *parent = 0);
-	~MainWindow();
-private slots:
 	void outputAudio();
+public:
+	explicit MainWindow(QWidget *parent = nullptr);
+	~MainWindow() override;
+private slots:
 	void on_toolButton_1_pressed();
 	void on_toolButton_1_released();
 	void on_toolButton_2_pressed();
@@ -56,7 +57,7 @@ private slots:
 	void on_toolButton_d_pressed();
 	void on_toolButton_d_released();
 protected:
-	void timerEvent(QTimerEvent *);
+	void timerEvent(QTimerEvent *) override;
 };
 
 #endif // MAINWINDOW_H

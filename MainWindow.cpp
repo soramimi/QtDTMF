@@ -1,9 +1,13 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
+#include "Generator.h"
 #include "SineCurve.h"
 #include "pi2.h"
+#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 #include "MyAudioOutput5.h"
-#include "Generator.h"
+#else
+#include "MyAudioOutput6.h"
+#endif
 #include <memory>
 
 static const int dtmf_fq[8] = { 697, 770, 852, 941, 1209, 1336, 1477, 1633 };
@@ -31,14 +35,9 @@ double goertzel(int size, int16_t const *data, int sample_fq, int detect_fq)
 }
 
 struct MainWindow::Private {
-	bool playing = false;
-	double dtmf_levels[8] = {};
 	Generator generator;
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-	MyAudioOutput5 audio;
-#else
-	MyAudioOutput6 audio;
-#endif
+	MyAudioOutput audio_output;
+	double dtmf_levels[8] = {};
 };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -49,8 +48,13 @@ MainWindow::MainWindow(QWidget *parent)
 	ui->setupUi(this);
 
 	m->generator.start();
+	m->audio_output.start(&m->generator);
 
-	m->audio.start();
+#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
+	connect(&m->generator, &Generator::notify, [&](int n, int16_t const *p){
+		detectDTMF(n, p);
+	});
+#endif
 
 	startTimer(10);
 }
@@ -65,7 +69,7 @@ MainWindow::~MainWindow()
 void MainWindow::detectDTMF(int size, int16_t const *data)
 {
 	for (int i = 0; i < 8; i++) {
-		m->dtmf_levels[i] = goertzel(size, data, m->audio.sample_fq, dtmf_fq[i]);
+		m->dtmf_levels[i] = goertzel(size, data, 8000, dtmf_fq[i]);
 	}
 }
 
@@ -76,23 +80,23 @@ void MainWindow::outputAudio()
 	std::vector<int16_t> buf;
 
 	while (1) {
-		int n = m->audio.audio_output->bytesFree();
+		int n = m->audio_output.output_->bytesFree();
 		n /= sizeof(int16_t);
 		const int N = 96;
 		if (n < N) return;
 
 		buf.resize(n);
 
-		int bytes = n * sizeof(int16_t);
-		int offset = 0;
+		size_t bytes = n * sizeof(int16_t);
+		size_t offset = 0;
 		while (offset < bytes) {
-			int l = m->generator.read((char *)buf.data() + offset, bytes - offset);
+			int l = (int)m->generator.read((char *)buf.data() + offset, qint64(bytes - offset));
 			offset += l;
 		}
 
-		m->audio.device->write((char const *)&buf[0], bytes);
+		m->audio_output.device_->write((char const *)buf.data(), (int)bytes);
 
-		detectDTMF(buf.size(), &buf[0]);
+		detectDTMF((int)buf.size(), buf.data());
 	}
 #endif
 }
@@ -114,7 +118,7 @@ void MainWindow::timerEvent(QTimerEvent *)
 
 	for (int i = 0; i < 8; i++) {
 		pb[i]->setRange(0, 10000);
-		pb[i]->setValue(m->dtmf_levels[i]);
+		pb[i]->setValue((int)m->dtmf_levels[i]);
 	}
 }
 

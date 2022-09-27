@@ -15,7 +15,7 @@ void Generator::stop()
 qint64 Generator::readData(char *data, qint64 len)
 {
 	int16_t *dst = (int16_t *)data;
-	int n = len / sizeof(int16_t);
+	size_t n = len / sizeof(int16_t);
 	if (n > 0) {
 		double a = sine_curve_lo.next();
 		double b = sine_curve_hi.next();
