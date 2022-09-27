@@ -18,7 +18,6 @@ private:
 
 	void detectDTMF(int size, const int16_t *data);
 	void setTone(char c);
-	void play(char c);
 public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
