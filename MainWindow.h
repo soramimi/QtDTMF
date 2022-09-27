@@ -1,9 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
+#include <QAudioFormat>
 #include <QAudioOutput>
-#include <stdint.h>
+#include <QIODevice>
+#include <QMainWindow>
 
 namespace Ui {
 class MainWindow;
@@ -23,7 +24,6 @@ public:
 	explicit MainWindow(QWidget *parent = 0);
 	~MainWindow();
 private slots:
-	void outputAudio();
 	void on_toolButton_1_pressed();
 	void on_toolButton_1_released();
 	void on_toolButton_2_pressed();
