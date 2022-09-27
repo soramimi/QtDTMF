@@ -8,6 +8,7 @@
 #else
 #include "MyAudioOutput6.h"
 #endif
+#include <QKeyEvent>
 #include <memory>
 
 static const int dtmf_fq[8] = { 697, 770, 852, 941, 1209, 1336, 1477, 1633 };
@@ -126,6 +127,19 @@ void MainWindow::timerEvent(QTimerEvent *)
 		pb[i]->setRange(0, 10000);
 		pb[i]->setValue((int)m->dtmf_levels[i]);
 	}
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *event)
+{
+    const auto text = event->text();
+    if (!text.isEmpty())
+        setTone(text.at(0).toUpper().toLatin1());
+}
+
+void MainWindow::keyReleaseEvent(QKeyEvent *event)
+{
+    Q_UNUSED(event);
+    setTone(0);
 }
 
 void MainWindow::setTone(char c)

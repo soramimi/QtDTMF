@@ -26,6 +26,8 @@ private slots:
     void setTone(char c);
 protected:
 	void timerEvent(QTimerEvent *) override;
+    void keyPressEvent(QKeyEvent *event) override;
+    void keyReleaseEvent(QKeyEvent *event) override;
 };
 
 #endif // MAINWINDOW_H
