@@ -14,7 +14,6 @@ void MyAudioOutput::start(QIODevice *out)
 	device_ = QMediaDevices::defaultAudioOutput();
 	output_ = std::make_shared<QAudioOutput>(device_);
 	sink_ = std::make_shared<QAudioSink>(device_, format);
-	sink_->setBufferSize(1);
 	sink_->start(out);
 }
 

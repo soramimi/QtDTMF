@@ -27,8 +27,9 @@ qint64 Generator::readData(char *data, qint64 len)
 		if (index == 0) {
 			emit notify(96, buffer);
 		}
+		return sizeof(int16_t);
 	}
-	return sizeof(int16_t);
+	return 0;
 }
 
 qint64 Generator::writeData(const char *data, qint64 len)
