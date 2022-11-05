@@ -13,12 +13,15 @@ lessThan(QT_MAJOR_VERSION, 6) {
 
 
 SOURCES += \
+        Audio.cpp \
         Generator.cpp \
         SineCurve.cpp \
         main.cpp \
         MainWindow.cpp
 
 HEADERS += \
+		Audio.h \
+		AudioAbstractIO.h \
 		SineCurve.h \
 		Generator.h \
 		MainWindow.h \
@@ -28,11 +31,19 @@ FORMS += \
         MainWindow.ui
 
 qt5 {
-SOURCES += MyAudioOutput5.cpp
-HEADERS += MyAudioOutput5.h
+SOURCES += \
+	AudioInputQt5.cpp \
+	AudioOutputQt5.cpp
+HEADERS += \
+	AudioInputQt5.h \
+	AudioOutputQt5.h
 }
 
 qt6 {
-SOURCES += MyAudioOutput6.cpp
-HEADERS += MyAudioOutput6.h
+SOURCES += \
+	AudioInputQt6.cpp \
+	AudioOutputQt6.cpp
+HEADERS += \
+	AudioInputQt6.h \
+	AudioOutputQt6.h
 }

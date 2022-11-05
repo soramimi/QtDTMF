@@ -1,9 +1,15 @@
 #include "Generator.h"
-#include "pi2.h"
 #include <QTime>
 
-void Generator::start()
+void Generator::start(int sample_rate)
 {
+	sample_rate_ = sample_rate;
+	sine_curve_lo_.sample_rate = sample_rate;
+	sine_curve_hi_.sample_rate = sample_rate;
+
+	BUFLEN = sample_rate / 50;
+	buffer_.resize(BUFLEN);
+
 	open(QIODevice::ReadOnly);
 }
 
@@ -15,19 +21,23 @@ void Generator::stop()
 qint64 Generator::readData(char *data, qint64 len)
 {
 	int16_t *dst = (int16_t *)data;
-	size_t n = len / sizeof(int16_t);
+	int n = len / sizeof(int16_t);
 	if (n > 0) {
-		double a = sine_curve_lo.next();
-		double b = sine_curve_hi.next();
-		int16_t v = (int16_t)((a + b) * volume);
-		dst[0] = v;
+		const int N = (int)buffer_.size();
+		n = std::min(n, sample_rate_ / 100);
+		for (int i = 0; i < n; i++) {
+			double a = sine_curve_lo_.next();
+			double b = sine_curve_hi_.next();
+			int16_t v = (int16_t)((a + b) * volume_);
+			dst[i] = v;
 
-		buffer[index] = v;
-		index = (index + 1) % 96;
-		if (index == 0) {
-			emit notify(96, buffer);
+			buffer_[index_] = v;
+			index_ = (index_ + 1) % N;
+			if (index_ == 0) {
+				emit notify(N, buffer_.data());
+			}
 		}
-		return sizeof(int16_t);
+		return n * (int)sizeof(int16_t);
 	}
 	return 0;
 }

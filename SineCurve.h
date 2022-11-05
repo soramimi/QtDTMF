@@ -3,7 +3,7 @@
 
 class SineCurve {
 public:
-	double sample_fq = 8000;
+	double sample_rate = 8000;
 	double tone_fq = 0;
 	double phase = 0;
 

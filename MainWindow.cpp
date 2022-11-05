@@ -1,13 +1,8 @@
 #include "MainWindow.h"
 #include "ui_MainWindow.h"
 #include "Generator.h"
-#include "SineCurve.h"
 #include "pi2.h"
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
-#include "MyAudioOutput5.h"
-#else
-#include "MyAudioOutput6.h"
-#endif
+#include "Audio.h"
 #include <QKeyEvent>
 #include <memory>
 
@@ -37,7 +32,9 @@ double goertzel(int size, int16_t const *data, int sample_fq, int detect_fq)
 
 struct MainWindow::Private {
 	Generator generator;
-	MyAudioOutput audio_output;
+	QAudioFormat audio_format;
+	AudioOutput audio_output;
+	OutputBuffer out;
 	double dtmf_levels[8] = {};
 };
 
@@ -48,8 +45,13 @@ MainWindow::MainWindow(QWidget *parent)
 {
 	ui->setupUi(this);
 
-	m->generator.start();
-	m->audio_output.start(&m->generator);
+	m->audio_format = Audio::defaultAudioFormat();
+	m->audio_format.setChannelCount(1);
+	m->audio_format.setSampleRate(8000);
+
+	m->generator.start(m->audio_format.sampleRate());
+	m->audio_output.start(AudioDevices::defaultAudioOutputDevice(), m->audio_format, &m->generator);
+	m->out.open(QIODevice::ReadOnly);
 
 #if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 	connect(&m->generator, &Generator::notify, [&](int n, int16_t const *p){
@@ -76,7 +78,7 @@ MainWindow::~MainWindow()
 void MainWindow::detectDTMF(int size, int16_t const *data)
 {
 	for (int i = 0; i < 8; i++) {
-		m->dtmf_levels[i] = goertzel(size, data, 8000, dtmf_fq[i]);
+		m->dtmf_levels[i] = goertzel(size, data, m->audio_format.sampleRate(), dtmf_fq[i]);
 	}
 }
 
@@ -87,7 +89,7 @@ void MainWindow::outputAudio()
 	std::vector<int16_t> buf;
 
 	while (1) {
-		int n = m->audio_output.output_->bytesFree();
+		int n = m->audio_output.bytesFree(&m->out);
 		n /= sizeof(int16_t);
 		const int N = 96;
 		if (n < N) return;
@@ -101,7 +103,7 @@ void MainWindow::outputAudio()
 			offset += l;
 		}
 
-		m->audio_output.device_->write((char const *)buf.data(), (int)bytes);
+		m->audio_output.write((uint8_t const *)buf.data(), (int)bytes, &m->out);
 
 		detectDTMF((int)buf.size(), buf.data());
 	}
