@@ -5,31 +5,6 @@
 
 class OutputBuffer;
 
-class OutputBuffer : public QIODevice {
-protected:
-	qint64 readData(char *data, qint64 maxlen) override
-	{
-		(void)data;
-		(void)maxlen;
-		return 0;
-	}
-	qint64 writeData(const char *data, qint64 len) override
-	{
-		(void)data;
-		(void)len;
-		return 0;
-	}
-public:
-	std::deque<uint8_t> queue_;
-	bool open(QIODevice::OpenMode mode) override
-	{
-		(void)mode;
-		return true;
-	}
-	void close() override
-	{
-	}
-};
 
 class AudioOutput : public AbstractAudioOutput {
 private:
