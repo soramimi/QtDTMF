@@ -3,6 +3,7 @@
 #include "Generator.h"
 #include "pi2.h"
 #include "Audio.h"
+#include <QDebug>
 #include <QKeyEvent>
 #include <memory>
 
@@ -34,7 +35,6 @@ struct MainWindow::Private {
 	Generator generator;
 	QAudioFormat audio_format;
 	AudioOutput audio_output;
-	OutputBuffer out;
 	double dtmf_levels[8] = {};
 };
 
@@ -51,13 +51,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m->generator.start(m->audio_format.sampleRate());
 	m->audio_output.start(AudioDevices::defaultAudioOutputDevice(), m->audio_format, &m->generator);
-	m->out.open(QIODevice::ReadOnly);
 
-#if (QT_VERSION >= QT_VERSION_CHECK(6, 0, 0))
 	connect(&m->generator, &Generator::notify, [&](int n, int16_t const *p){
 		detectDTMF(n, p);
 	});
-#endif
 
 	startTimer(10);
 
@@ -82,38 +79,10 @@ void MainWindow::detectDTMF(int size, int16_t const *data)
 	}
 }
 
-void MainWindow::outputAudio()
-{
-#if (QT_VERSION < QT_VERSION_CHECK(6, 0, 0))
 
-	std::vector<int16_t> buf;
-
-	while (1) {
-		int n = m->audio_output.bytesFree(&m->out);
-		n /= sizeof(int16_t);
-		const int N = 96;
-		if (n < N) return;
-
-		buf.resize(n);
-
-		size_t bytes = n * sizeof(int16_t);
-		size_t offset = 0;
-		while (offset < bytes) {
-			int l = (int)m->generator.read((char *)buf.data() + offset, qint64(bytes - offset));
-			offset += l;
-		}
-
-		m->audio_output.write((uint8_t const *)buf.data(), (int)bytes, &m->out);
-
-		detectDTMF((int)buf.size(), buf.data());
-	}
-#endif
-}
 
 void MainWindow::timerEvent(QTimerEvent *)
 {
-	outputAudio();
-
 	QProgressBar *pb[8] = {
 		ui->progressBar_1,
 		ui->progressBar_2,

@@ -42,7 +42,6 @@ public:
 	void start(const AudioDevice &dev, const QAudioFormat &format, QIODevice *out) override;
 	void stop() override;
 	int bytesFree(OutputBuffer *out) const;
-	void write(const uint8_t *ptr, int len, OutputBuffer *outbuf);
 };
 
 #endif // AUDIOOUTPUTQT5_H

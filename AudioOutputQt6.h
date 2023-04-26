@@ -2,7 +2,6 @@
 #define AUDIOOUTPUTQT6_H
 
 #include "AudioAbstractIO.h"
-
 #include <QIODevice>
 
 class QIODevice;
@@ -67,7 +66,6 @@ public:
 	void start(AudioDevice const &dev, const QAudioFormat &format, QIODevice *out) override;
 	void stop() override;
 	int bytesFree(OutputBuffer *out) const;
-	void write(const uint8_t *p, int n, OutputBuffer *out);
 };
 
 #endif // AUDIOOUTPUTQT6_H

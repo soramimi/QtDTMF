@@ -25,7 +25,7 @@ public:
 
 class AbstractAudioOutput {
 public:
-	int RECOMMENDED_BUFFER_SIZE = 9600;
+    int RECOMMENDED_BUFFER_SIZE = 9600;
 	virtual ~AbstractAudioOutput() = default;
 	virtual QString description() = 0;
 	virtual void start(AudioDevice const &dev, const QAudioFormat &format, QIODevice *out) = 0;

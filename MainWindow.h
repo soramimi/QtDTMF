@@ -18,7 +18,6 @@ private:
 	Private *m;
 
 	void detectDTMF(int size, const int16_t *data);
-	void outputAudio();
 public:
 	explicit MainWindow(QWidget *parent = nullptr);
 	~MainWindow() override;

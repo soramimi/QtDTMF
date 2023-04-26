@@ -36,7 +36,7 @@ void AudioOutput::start(AudioDevice const &dev, const QAudioFormat &format, QIOD
 	m->device = dev.device_;
 	m->output = std::make_shared<QAudioOutput>(m->device);
 	m->sink = std::make_shared<QAudioSink>(m->device, format);
-	m->sink->start(out);
+    m->sink->start(out);
 }
 
 void AudioOutput::stop()
@@ -57,9 +57,6 @@ int AudioOutput::bytesFree(OutputBuffer *out) const
 	return 0;
 }
 
-void AudioOutput::write(uint8_t const *ptr, int len, OutputBuffer *out)
-{
-	out->write(ptr, len);
-}
+
 
 

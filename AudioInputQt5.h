@@ -16,9 +16,6 @@ public:
 	int bytesAvailable() const override;
 	int read(char *data, int maxlen) override;
 	QByteArray readAll() override;
-
-	// AbstractAudioInput interface
-public:
 };
 
 #endif // AUDIOINPUTQT5_H
