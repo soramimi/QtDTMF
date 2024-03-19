@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 	m->audio_format = Audio::defaultAudioFormat();
 	m->audio_format.setChannelCount(1);
-	m->audio_format.setSampleRate(8000);
+	m->audio_format.setSampleRate(m->generator.sampleRate());
 
 	m->generator.start(m->audio_format.sampleRate());
 	m->audio_output.start(AudioDevices::defaultAudioOutputDevice(), m->audio_format, &m->generator);

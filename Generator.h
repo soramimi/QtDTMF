@@ -9,8 +9,8 @@ class Generator : public QIODevice {
 	Q_OBJECT
 private:
 	int volume_ = 5000;
-	int sample_rate_ = 8000;
-	int BUFLEN = 160;
+	int sample_rate_ = 48000;
+	int BUFLEN = 640;
 	std::vector<int16_t> buffer_;
 	SineCurve sine_curve_lo_;
 	SineCurve sine_curve_hi_;
@@ -22,6 +22,11 @@ public:
 	qint64 readData(char *data, qint64 len) override;
 	qint64 writeData(const char *data, qint64 len) override;
 	qint64 bytesAvailable() const override;
+
+	int sampleRate() const
+	{
+		return sample_rate_;
+	}
 
 	void setTone(int lo_fq, int hi_fq)
 	{
